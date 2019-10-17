@@ -11,6 +11,8 @@ yapf = "*"
 prospector = "*"
 pytest = "*"
 mypy = "*"
+pylint = "<2.0.0"
+autopep8 = "*"
 
 [requires]
 python_version = "3.7"

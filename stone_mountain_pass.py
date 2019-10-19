@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
 
 # Creating a class "Map" that deals with the actual map display.
@@ -10,39 +10,48 @@ class Map:
 
     def __init__(self, file):
         self.file = file
+        self.coordinates = []
+        self.min_elevation = []
+        self.max_elevation = []
+        self.all_colors = []
+        self.colors_for_rows = []
 
-    def data_from_text_file(self, file):
-        with open('file') as text_file:
-            file_contents = text_file.read()
+    def data_from_text_file(self):
+        with open(self.file) as text_file:
+            self.file_contents = text_file.read()
 
-        coordinates_list = [
-            int(each) for each in line.split()
-            for line in file_contents.split("\n")]
+    def get_coordinates(self):
+        self.coordinates = [[int(each) for each in line.split()]
+                            for line in self.file_contents.strip("\n").split("\n")]
+        print(self.coordinates)
 
-        min = coordinates_list[0][0]
-        max = coordinates_list[0][0]
+    def get_minimum_maximum_coordinates(self):
+        self.min_elevation = self.coordinates[0][0]
+        self.max_elevation = self.coordinates[0][0]
 
-        for each in coordinates_list:
+        for each in self.coordinates:
             for integer in each:
-                if integer < min:
-                    min = integer
-                if integer > max:
-                    max = integer
+                if integer < self.min_elevation:
+                    self.min_elevation = integer
+                if integer > self.max_elevation:
+                    self.max_elevation = integer
+        print(self.min_elevation)
+        print(self.max_elevation)
 
-        colors_for_text = []
-        rows_of_colors = []
-
-        for rows in coordinates_list:
-            for numbers in rows:
-                color_int = round(((number - min) / (max - min)) * 255)
-                rows_of_colors.append(color_int)
-        colors_for_text.append(rows_of_colors)
-        rows_of_colors = []
+    # def give_color_to_elevations(self):
+    #     for rows in self.coordinates:
+    #         for numbers in rows:
+    #             color_int = round(
+    #                 ((number - self.min_elevation) / (self.max_elevation - self.min_elevation)) * 255)
+    #             self.colors_for_rows.append(color_int)
+    #         self.all_colors.append(self.colors_for_rows)
+    #         self.colors_for_rows = []
+    #     print('test')
 
     def draw_map(self):
-        img = Image.new("RGBA", (601, 601), color=(65, 60, 35, 255))
+        print('Generating...')
+        img = Image.new("RGBA", (601, 601), color=(0, 255, 0, 255))
         draw = ImageDraw.Draw(img)
-        # draw.rectangle([0, 0, 600, 600], width=5, outline=(0, 0, 0, 255))
         img.save('map.png')
 
     # def list_all_coordinates
@@ -54,3 +63,8 @@ class Map:
 
 if __name__ == "__main__":
     map = Map("elevation_small.txt")
+    map.data_from_text_file()
+    map.get_coordinates()
+    map.get_minimum_maximum_coordinates()
+    # map.give_color_to_elevations()
+    map.draw_map()
